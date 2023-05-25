@@ -5,7 +5,7 @@ export const home = async (req, res) => {
   /*MongoDB의 collection이름이 Video가 아닌 videos인 이유
 Mongoose는 자동으로 모델을 찾고, 해당 모델의 이름을 따서 소문자+뒤에 s(복수형)을 붙여 컬렉션을 생성합니다.
 Tank 모델은 -> 컬렉션에 저장될 때, tanks로 저장됩니다. */
-  return res.render("home", { pageTitle: "ToDo List", videos });
+  return res.render("home", { pageTitle: "home", videos });
 };
 
 export const watch = async (req, res) => {
@@ -21,7 +21,7 @@ export const getEdit = async (req, res) => {
   const { id } = req.params;
   const video = await Video.findById(id);
   if (!video) {
-    return res.render("404", { pageTitle: "Video not found." });
+    return res.status(404).render("404", { pageTitle: "Video not found." });
   }
   return res.render("edit", { pageTitle: `Edit: ${video.title}`, video });
 };
@@ -31,7 +31,7 @@ export const postEdit = async (req, res) => {
   const { title, description, hashtags } = req.body;
   const video = await Video.exists({ _id: id });
   if (!video) {
-    return res.render("404", { pageTitle: "Video not found." });
+    return res.status(404).render("404", { pageTitle: "Video not found." });
   }
   await Video.findByIdAndUpdate(id, {
     title,
@@ -57,7 +57,7 @@ export const postUpload = async (req, res) => {
     console.log(title, description);
     return res.redirect("/");
   } catch (error) {
-    return res.render("upload", {
+    return res.status(400).render("upload", {
       pageTitle: "Upload Video",
       errorMessage: error._message,
     });

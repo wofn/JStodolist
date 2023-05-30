@@ -28,11 +28,12 @@ app.use(express.urlencoded({ extended: true }));
 app.use(
   session({
     secret: process.env.COOKIE_SECRET,
-    resave: true,
-    saveUninitialized: true,
+    resave: false,
+    saveUninitialized: false, //세션이 새로 만들어지고 수정이 된적 없을 때 uninitialized(초기화되지 않은)
     store: MongoStore.create({ mongoUrl: process.env.DB_URL }),
   })
 );
+
 app.use(localsMiddleware);
 app.use("/", globalRouter); //라우터 쓰기
 app.use("/users", userRouter);

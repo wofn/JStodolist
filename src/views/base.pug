@@ -1,7 +1,7 @@
 doctype html
 html(lang="ko")
     head
-        title #{pageTitle} | jsToDo
+        title #{pageTitle} | ituebe 
         link(rel="stylesheet" href="https://unpkg.com/mvp.css")
     body
         header
@@ -10,11 +10,22 @@ html(lang="ko")
                 ul
                     li
                         a(href="/") Home
+                    if loggedIn
+                        li 
+                            a(href="/logout") log out 
+                        li
+                            a(href="/my-profile") #{loggedInUser.name}의 프로필
+                    else
+                        li
+                            a(href="/join")  Join
+                        li
+                            a(href="/login")  Login                                               
                     li
-                        a(href="/videos/upload") push
+                        a(href="/search") Search
                     li
-                        a(href="/join") Join  
-                            
-        main 
+                        a(href="/videos/upload") Upload Video
+        main
             block content
-    include partials/footer.pug
+    include partials/footer
+
+    

@@ -1,4 +1,5 @@
 import User from "../models/User";
+import fetch from "node-fetch";
 import bcrypt from "bcrypt";
 
 export const getJoin = (req, res) => res.render("join", { pageTitle: "Join" });
@@ -93,16 +94,27 @@ export const finishGithubLogin = async (req, res) => {
   };
   const params = new URLSearchParams(config).toString();
   const finalUrl = `${baseUrl}?${params}`;
-  const data = await fetch(finalUrl, {
-    //finalUrl에 post 요청보내기, fetch를 통해 데이터를 받아오고
-    //fetch는 브라우저에서만 사용 가능
-    method: "POST",
-    headers: {
-      Accept: "application/json",
-    },
-  });
-  const json = await data.json(); //json으로 추출
-  console.log(json);
+  const tokenRequest = await (
+    await fetch(finalUrl, {
+      method: "POST",
+      headers: {
+        Accept: "application/json",
+      },
+    })
+  ).json();
+  if ("access_token" in tokenRequest) {
+    const { access_token } = tokenRequest;
+    const userRequest = await (
+      await fetch("https://api.github.com/user", {
+        headers: {
+          Authorization: `token ${access_token}`,
+        },
+      })
+    ).json();
+    console.log(userRequest);
+  } else {
+    return res.redirect("/login");
+  }
 };
 export const edit = (req, res) => res.send("edit user");
 export const remove = (req, res) => res.send("remove user");

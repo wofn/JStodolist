@@ -119,11 +119,30 @@ export const finishGithubLogin = async (req, res) => {
         },
       })
     ).json();
-    const email = emailData.find(
-      (email) => email.primary === true && email.verified === true
+    const emailObj = emailData.find(
+      (email) => email.primary === true && email.verified === true //깃헙이 주는 list에서 primary이면서 verified된 email객체 찾기
     );
-    if (!email) {
+    if (!emailObj) {
       return res.redirect("/login");
+    }
+    const existingUser = await User.findOne({ email: emailObj.email }); //깃헙이 주는 같은 email을 가진 user가 이미 이다면 로그인
+    if (existingUser) {
+      req.session.loggedIn = true;
+      req.session.user = existingUser;
+      return res.redirect("/");
+    } else {
+      //계정 생성! email로 user가 없으니까 계정을 생성해야 된다.
+      const user = await User.create({
+        name: userData.name ? userData.name : "Unknown",
+        username: userData.login,
+        email: emailObj.email,
+        password: "",
+        socialOnly: true,
+        location: userData.location,
+      });
+      req.session.loggedIn = true;
+      req.session.user = user;
+      return res.redirect("/");
     }
   } else {
     return res.redirect("/login");

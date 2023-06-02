@@ -5,6 +5,7 @@ const videoSchema = new mongoose.Schema({
   description: { type: String, required: true, trim: true, minLength: 20 },
   createdAt: { type: Date, required: true, default: Date.now }, //Date.now에서 ()를 붙이지 않는 이유는 바로 실행x
   hashtags: [{ type: String, trim: true }],
+  user_email: { type: String, required: true },
   meta: {
     views: { type: Number, default: 0, required: true },
     rating: { type: Number, default: 0, required: true },

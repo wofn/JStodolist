@@ -2,7 +2,7 @@ import mongoose from "mongoose";
 //1. 데이터 형식 정의
 const videoSchema = new mongoose.Schema({
   title: { type: String, required: true, trim: true, maxLength: 50 },
-  description: { type: String, required: true, trim: true, minLength: 20 },
+  description: { type: String, required: true, trim: true, maxLength: 50 },
   createdAt: { type: Date, required: true, default: Date.now }, //Date.now에서 ()를 붙이지 않는 이유는 바로 실행x
   hashtags: [{ type: String, trim: true }],
   user_email: { type: String, required: true },

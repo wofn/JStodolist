@@ -5,7 +5,7 @@ import bcrypt from "bcrypt";
 export const getJoin = (req, res) => res.render("join", { pageTitle: "Join" });
 
 export const postJoin = async (req, res) => {
-  const { name, username, email, password, password2, location } = req.body;
+  const { name, username, email, password, password2 } = req.body;
   const pageTitle = "Join";
 
   //비밀번호 서로 일치 확인
@@ -24,7 +24,7 @@ export const postJoin = async (req, res) => {
   if (exists) {
     return res.status(400).render("join", {
       pageTitle,
-      errorMessage: "이미 사용 중인 username/email입니다.",
+      errorMessage: "이미 사용 중인 아이디/email입니다.",
     });
   }
   try {
@@ -33,7 +33,6 @@ export const postJoin = async (req, res) => {
       username,
       email,
       password,
-      location,
     });
     return res.redirect("/login");
   } catch (error) {

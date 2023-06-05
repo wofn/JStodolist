@@ -1,9 +1,8 @@
 mixin video(video)
-    main
-        h4
-            a(href=`/videos/${video.id}`)=video.title
-            br
-            a(href=`${video.id}/edit`) Edit video &rarr;
-            br
-            a(href=`${video.id}/delete`) Delete video &rarr;
+    div
+        h1
+             a(href=`/videos/${video.id}`)=video.title
+        h3=video.description
+        ul
+        span=video.createdAt
         hr

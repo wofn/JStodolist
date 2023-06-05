@@ -9,14 +9,14 @@ export const home = async (req, res) => {
       createdAt: "desc",
     });
   }
-  return res.render("home", { pageTitle: "home", videos });
+  return res.render("home", { pageTitle: "To Do List", videos });
 };
 
 export const watch = async (req, res) => {
   const { id } = req.params;
   const video = await Video.findById(id);
   if (!video) {
-    return res.render("404", { pageTitle: "Video not found." });
+    return res.render("404", { pageTitle: "to do를 찾을 수 없습니다." });
   }
   return res.render("watch", { pageTitle: video.title, video });
 };
@@ -25,43 +25,45 @@ export const getEdit = async (req, res) => {
   const { id } = req.params;
   const video = await Video.findById(id);
   if (!video) {
-    return res.status(404).render("404", { pageTitle: "Video not found." });
+    return res
+      .status(404)
+      .render("404", { pageTitle: "to do를 찾을 수 없습니다." });
   }
-  return res.render("edit", { pageTitle: `Edit: ${video.title}`, video });
+  return res.render("edit", { pageTitle: `${video.title} 수정 중`, video });
 };
 
 export const postEdit = async (req, res) => {
   const { id } = req.params; //route로 부터 id를 얻어와서
-  const { title, description, hashtags } = req.body;
+  const { title, description } = req.body;
   const video = await Video.exists({ _id: id });
   if (!video) {
-    return res.status(404).render("404", { pageTitle: "Video not found." });
+    return res
+      .status(404)
+      .render("404", { pageTitle: "to do를 찾을 수 없습니다." });
   }
   await Video.findByIdAndUpdate(id, {
     title,
     description,
-    hashtags: Video.formatHashtags(hashtags),
   });
   return res.redirect(`/videos/${id}`);
 };
 
 export const getUpload = (req, res) => {
-  return res.render("upload", { pageTitle: "upload video" });
+  return res.render("upload", { pageTitle: "할 일 추가" });
 };
 
 export const postUpload = async (req, res) => {
-  const { title, description, hashtags } = req.body;
+  const { title, description } = req.body;
   try {
     await Video.create({
       title,
       description,
-      hashtags: Video.formatHashtags(hashtags),
       user_email: req.session.user.email,
     });
     return res.redirect("/");
   } catch (error) {
     return res.status(400).render("upload", {
-      pageTitle: "Upload Video",
+      pageTitle: "할 일 추가",
       errorMessage: error._message,
     });
   }
